@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CopyIcon, Cross1Icon } from '@radix-ui/react-icons';
 import { FC, ReactElement, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -29,6 +30,14 @@ const CloudinaryForm: FC = () => {
     setCloudinaryUrl(updatedUrl);
   });
 
+  const clearInput = (): void => {
+    methods.resetField(ECloudinaryFormField.LINK);
+  };
+
+  const copyLinkToClipboard = (url: string): void => {
+    navigator.clipboard.writeText(url);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <Form {...methods}>
@@ -39,28 +48,48 @@ const CloudinaryForm: FC = () => {
             render={({ field }): ReactElement => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Cloudinary link" {...field} />
+                  <div className="relative">
+                    <Input placeholder="Cloudinary link" className="pr-10" {...field} />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute right-0 top-0 border-0"
+                      onClick={clearInput}
+                    >
+                      <Cross1Icon />
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button className="w-full" type="submit">
+            Submit
+          </Button>
         </form>
       </Form>
-      {!!cloudinaryUrl && (
-        <div>
-          <div className="flex flex-col gap-4">
-            <span>Optimized URL:</span>
-            <a className="text-blue-500 underline" href={cloudinaryUrl} rel="noopener noreferrer" target="_blank">
-              {cloudinaryUrl}
-            </a>
-          </div>
-          <div className="bg-amber-50 p-4">
-            <img src={cloudinaryUrl} alt="Optimized" />
-          </div>
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-4">
+          <span>Optimized URL:</span>
+          {!!cloudinaryUrl && (
+            <div className="flex gap-4 items-center">
+              <Button asChild variant="link" className="text-neutral-400 p-0 block h-fit">
+                <a className="truncate w-[90%] " href={cloudinaryUrl} rel="noopener noreferrer" target="_blank">
+                  {cloudinaryUrl}
+                </a>
+              </Button>
+              <Button variant="outline" size="icon" onClick={(): void => copyLinkToClipboard(cloudinaryUrl)}>
+                <CopyIcon />
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+        <div className="bg-amber-50 p-4 rounded-xl h-[40dvh]">
+          {!!cloudinaryUrl && <img src={cloudinaryUrl} alt="Optimized" />}
+          {!cloudinaryUrl && <span className="text-black">Optimized image will be displayed here</span>}
+        </div>
+      </div>
     </div>
   );
 };
