@@ -32,6 +32,7 @@ const CloudinaryForm: FC = () => {
 
   const clearInput = (): void => {
     methods.resetField(ECloudinaryFormField.LINK);
+    setCloudinaryUrl('');
   };
 
   const copyLinkToClipboard = (url: string): void => {
