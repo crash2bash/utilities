@@ -25,7 +25,7 @@ const CloudinaryForm: FC = () => {
 
   const handleSubmit = methods.handleSubmit((data) => {
     const url = decodeURIComponent(data[ECloudinaryFormField.LINK]);
-    const updatedUrl = url.replace(/(\/upload\/)([^/]+)/, '$1f_auto/q_auto/$2');
+    const updatedUrl = url.replace(/(\/upload\/)(.*?)(\.[a-zA-Z]{3,4})$/, '$1f_auto/q_auto/$2');
 
     setCloudinaryUrl(updatedUrl);
   });
@@ -50,14 +50,16 @@ const CloudinaryForm: FC = () => {
                 <FormControl>
                   <div className="relative">
                     <Input placeholder="Cloudinary link" className="pr-10" {...field} />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="absolute right-0 top-0 border-0"
-                      onClick={clearInput}
-                    >
-                      <Cross1Icon />
-                    </Button>
+                    {!!field?.value && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute right-0 top-0 border-0"
+                        onClick={clearInput}
+                      >
+                        <Cross1Icon />
+                      </Button>
+                    )}
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -86,7 +88,7 @@ const CloudinaryForm: FC = () => {
           )}
         </div>
         <div className="bg-amber-50 p-4 rounded-xl h-[40dvh]">
-          {!!cloudinaryUrl && <img src={cloudinaryUrl} alt="Optimized" />}
+          {!!cloudinaryUrl && <img src={cloudinaryUrl} alt="Optimized" className="w-full h-full object-contain" />}
           {!cloudinaryUrl && <span className="text-black">Optimized image will be displayed here</span>}
         </div>
       </div>
